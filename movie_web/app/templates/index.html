@@ -1,0 +1,88 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Movie Paradise{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Movie Paradise</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">主页</a></li>
+                <li><a href="/category/action/page/1">动作片</a></li>
+                <li><a href="/category/fiction/page/1">科幻片</a></li>
+                <li><a href="/category/horror/page/1">恐怖片</a></li>
+                <li><a href="/category/feature/page/1">剧情片</a></li>
+                <li><a href="/category/animation/page/1">动画片</a></li>
+                <li><a href="/category/comedy/page/1">喜剧片</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="container">
+                {% for movie in movies %}
+                {% if loop.first %}
+                <div class="row">
+                {% endif %}
+                    <div class="col-xs-6 col-sm-3">
+                        <a href='/movie/{{movie.id}}'>
+                            <img style="width: 160px;height: 200px;" src="{{movie.cover_url}}" alt="{{movie.title}}" onerror="javascript:this.src='https://www.wsgxsp.com/TP/149881997658968.png'">
+                            <br />
+                            <p style="width: 160px;text-align:center;">
+                            {% if "中国" in movie.country %}
+                            {{movie.title.split('/')[0]}}
+                            {% else %}
+                            {{movie.translated_title.split('/')[0]}}
+                            {% endif %}
+                            </p>
+                    </div>
+                {% if loop.index%4==0 and not loop.last%}
+                </div>
+                <br />
+                <div class="row">
+                {% endif %}
+                {% if loop.last %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            <br/>
+
+            <a href='../page/{{pagination.page-1}}' disabled='pagination.has_prev'>上一页</a>
+            {% for i in range(pagination.page-pagination.page%10+1,pagination.page-pagination.page%10+11) %}
+            {% if i==pagination.page %}
+            <span>[{{i}}]</span>
+            {% else %}
+            <a href='../page/{{i}}'>[{{i}}]</a>
+            {% endif %}
+            {% endfor %}
+            <a href='../page/{{pagination.page+1}}' disabled='pagination.has_next'>下一页</a>
+            <select style="width:50px" onchange="location.href=this.options[this.selectedIndex].value;">
+            {% for i in range(1,pagination.pages) %}
+            {% if i==pagination.page %}
+            <option value="../page/{{i}}" selected>{{i}}</option>
+            {% else %}
+            <option value="../page/{{i}}">{{i}}</option>
+            {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

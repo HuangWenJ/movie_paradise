@@ -1,0 +1,48 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}407 Movie Paradise{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">407 Movie Paradise</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">HOME</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+            <h1>{{movie.title}}</h1>
+            <div>
+                <img src="{{movie.cover_url}}" onerror="javascript:this.src='https://www.wsgxsp.com/TP/149881997658968.png'">
+                <p>译名：{{movie.translated_title}}</p>
+                <p>类型：{{movie.categories}}</p>
+                <p>年代：{{movie.year}}</p>
+                <p>国家：{{movie.country}}</p>
+                <p>语言：{{movie.language}}</p>
+                <p>上映日期：{{movie.date}}</p>
+                <p>评分：{{movie.score}}</p>
+                <p>片长：{{movie.length}}</p>
+                <p>导演：{{movie.director}}</p>
+                <p>主演：{{','.join(movie.star_in.split('\n'))}}</p>
+                <p>简介：{{movie.description}}</p>
+                <p>迅雷下载链接：<br /><a href='{{movie.download_url}}'>{{movie.download_url}}</a></p>
+                <p>磁力链接：<br /><a href="{{movie.magnet_url}}">{{movie.magnet_url}}</a></p>
+            </div>
+    </div>
+</div>
+{% endblock %}
