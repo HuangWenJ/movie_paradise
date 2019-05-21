@@ -13,6 +13,32 @@ from app import app, db
 from app.models import Movie
 movie_count = 1
 
+def get_new_movie():
+    base_url = 'http://www.ygdy8.net%s'
+    url = 'http://www.ygdy8.net/html/gndy/dyzz/index.html'
+    last_movie_id = db.session.query(Movie).order_by(Movie.id.desc()).first().movie_id
+    response = requests.get(url)
+    response.encoding = 'gb2312'
+    html = response.text
+    # print(html)
+    soup = BeautifulSoup(html, "lxml")
+    # print(soup.prettify)
+    result = soup.find_all('a', class_='ulink')
+    result = result[::-1]
+    urls = []
+    for each in result:
+        movie_id = int(each['href'].split('/')[-1].split('.')[0])
+        if last_movie_id < movie_id:
+            urls.append(base_url % each['href'])
+    for url in urls:
+        time.sleep(1)
+        try:
+            get_movie_info_by_url(url)
+        except Exception as e:
+            print(e)
+            restart_program()
+            
+    
 
 def save_break_point(page_num, movie_id):
     print('saving break point')
@@ -44,6 +70,9 @@ def restart_program():
     os.execl(python, python, *sys.argv) 
 
 def add_movie(movie):
+    if db.session.query(Movie).filter(Movie.translated_title == movie.translated_title).all():
+        # print(db.session.query(Movie).filter(Movie.translated_title == movie.translated_title).all())
+        return 'already in database'
     try:
         db.session.add(movie)
         db.session.commit()
@@ -107,7 +136,7 @@ def get_movie_urls(page_num, movie_id):
                 continue
             except Exception as e:
                 movie_id = url.split('/')[-1].split('.')[0]
-                save_break_point(count, movie_id)
+                save_break_point(count, int(movie_id)+1)
                 print('page_num:%d , movie_id:%s' % (count, movie_id))
                 s = traceback.format_exc()
                 logging.error(s)
@@ -115,6 +144,8 @@ def get_movie_urls(page_num, movie_id):
                 restart_program()
                 exit(1)
         count -= 1
+        if (count == 0):
+            break
         # break
 
 
@@ -257,8 +288,7 @@ def get_movie_info_by_url(url):
 
 # if __name__ == '__main__':
 def get_movies():
-    # url = 'http://www.ygdy8.net/html/gndy/dyzz/20190429/58508.html'
-    # get_movie_info_by_url(url)
     print('start gettng movies')
-    page_num, movie_id = recover()
-    get_movie_urls(page_num, movie_id)
+    get_new_movie()
+    # page_num, movie_id = recover()
+    # get_movie_urls(page_num, movie_id)

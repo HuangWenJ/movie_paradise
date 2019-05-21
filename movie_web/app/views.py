@@ -5,13 +5,13 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from sqlalchemy import desc, func
 @app.route('/')
 def index():
-    pagination = Movie.query.paginate(1, per_page=20, error_out=False)
+    pagination = Movie.query.order_by(Movie.id.desc()).paginate(1, per_page=20, error_out=False)
     movies=pagination.items
     return render_template('index.html', movies=movies, pagination=pagination)
 
 @app.route('/page/<page_id>')
 def get_movies_by_page(page_id):
-    pagination = Movie.query.paginate(int(page_id), per_page=20, error_out=False)
+    pagination = Movie.query.order_by(Movie.id.desc()).paginate(int(page_id), per_page=20, error_out=False)
     movies=pagination.items
     return render_template('index.html', movies=movies, pagination=pagination)
 
@@ -35,7 +35,7 @@ def get_movies_by_category(category_name, page_id):
         category = '%动作%'
     elif category_name == 'comedy':
         category='%喜剧%'
-    pagination = Movie.query.filter(Movie.categories.like(category)).order_by(Movie.id.asc()).paginate(int(page_id), per_page=20, error_out=False)
+    pagination = Movie.query.filter(Movie.categories.like(category)).order_by(Movie.id.desc()).paginate(int(page_id), per_page=20, error_out=False)
     movies=pagination.items
     return render_template('index.html', movies=movies, pagination=pagination)
 
