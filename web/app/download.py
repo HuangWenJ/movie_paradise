@@ -20,9 +20,7 @@ def get_new_movie():
     response = requests.get(url)
     response.encoding = 'gb2312'
     html = response.text
-    # print(html)
     soup = BeautifulSoup(html, "lxml")
-    # print(soup.prettify)
     result = soup.find_all('a', class_='ulink')
     result = result[::-1]
     urls = []
@@ -30,13 +28,11 @@ def get_new_movie():
         movie_id = int(each['href'].split('/')[-1].split('.')[0])
         if last_movie_id < movie_id:
             urls.append(base_url % each['href'])
+    if not urls:
+        print('no new movie.......')
     for url in urls:
         time.sleep(1)
-        try:
-            get_movie_info_by_url(url)
-        except Exception as e:
-            print(e)
-            restart_program()
+        get_movie_info_by_url(url)
             
     
 
@@ -254,18 +250,20 @@ def get_movie_info_by_url(url):
         star_in = '无'
     descr_elem = contents.find(text=re.compile("简(.*)介"))
     description = ''
-
-    while (True):
-        descr_elem = descr_elem.next_sibling
-        if not descr_elem:
-            break
-        if isinstance(descr_elem, Tag):
-            if descr_elem.name != 'br':
+    if not descr_elem:
+        description = '暂无简介'
+    else:
+        while (True):
+            descr_elem = descr_elem.next_sibling
+            if not descr_elem:
                 break
-        else:
-            if '获奖情况' in descr_elem:
-                break
-            description += descr_elem.strip()+"\n"
+            if isinstance(descr_elem, Tag):
+                if descr_elem.name != 'br':
+                    break
+            else:
+                if '获奖情况' in descr_elem:
+                    break
+                description += descr_elem.strip()+"\n"
 
     # print(title)
     # print(year)

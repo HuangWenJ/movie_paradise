@@ -9,6 +9,13 @@ def index():
     movies=pagination.items
     return render_template('index.html', movies=movies, pagination=pagination)
 
+@app.route('/search/<keyword>/page/<page_id>')
+def search_movie(keyword, page_id):
+    keyword='%'+keyword+'%'
+    pagination = Movie.query.filter(Movie.translated_title.like(keyword)).order_by(Movie.id.desc()).paginate(int(page_id), per_page=20, error_out=False)
+    movies=pagination.items
+    return render_template('index.html', movies=movies, pagination=pagination)
+
 @app.route('/page/<page_id>')
 def get_movies_by_page(page_id):
     pagination = Movie.query.order_by(Movie.id.desc()).paginate(int(page_id), per_page=20, error_out=False)

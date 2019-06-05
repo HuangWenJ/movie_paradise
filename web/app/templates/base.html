@@ -1,14 +1,18 @@
 <html>
-  <head>
-    {% if title %}
-    <title>{{title}}</title>
-    {% else %}
-    <title>Movie</title>
-    {% endif %}
-  </head>
-  <body>
-    <div><a href="/">Home</a></div>
-    <hr>
-    {% block content %}{% endblock %}
-  </body>
+
+<head>
+  {% if title %}
+  <title>{{title}}</title>
+  {% else %}
+  <title>Movie</title>
+  {% endif %}
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</head>
+
+<body>
+  <div><a href="/">Home</a></div>
+  <hr>
+  {% block content %}{% endblock %}
+</body>
+
 </html>

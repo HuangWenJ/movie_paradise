@@ -23,8 +23,15 @@
                 <li><a href="/category/feature/page/1">剧情片</a></li>
                 <li><a href="/category/animation/page/1">动画片</a></li>
                 <li><a href="/category/comedy/page/1">喜剧片</a></li>
+                <li><input id='search-text' type='text' style="width:250px;margin-top: 12px;margin-left:170px;"
+                        onkeydown="onKeyDown(event)" /></li>
+                <li><button class="btn" onclick="onClick()"
+                        style="background-color:#222222;color: #9d9d9d;width:50px;height:35px;border: 0ch;margin-top: 8px;margin-left:10px;">搜索</button>
+                </li>
             </ul>
+
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -37,34 +44,35 @@
                 {% for movie in movies %}
                 {% if loop.first %}
                 <div class="row">
-                {% endif %}
+                    {% endif %}
                     <div class="col-xs-6 col-sm-3">
                         <a href='/movie/{{movie.id}}'>
-                            <img style="width: 160px;height: 200px;" src="{{movie.cover_url}}" alt="{{movie.title}}" onerror="javascript:this.src='https://www.wsgxsp.com/TP/149881997658968.png'">
+                            <img style="width: 160px;height: 200px;" src="{{movie.cover_url}}" alt="{{movie.title}}"
+                                onerror="javascript:this.src='https://www.wsgxsp.com/TP/149881997658968.png'">
                             <br />
                             <p style="width: 160px;text-align:center;">
-                            {% if "中国" in movie.country %}
-                            {{movie.title.split('/')[0]}}
-                            {% else %}
-                            {{movie.translated_title.split('/')[0]}}
-                            {% endif %}
+                                {% if "中国" in movie.country %}
+                                {{movie.title.split('/')[0]}}
+                                {% else %}
+                                {{movie.translated_title.split('/')[0]}}
+                                {% endif %}
                             </p>
                     </div>
-                {% if loop.index%4==0 and not loop.last%}
+                    {% if loop.index%4==0 and not loop.last%}
                 </div>
                 <br />
                 <div class="row">
-                {% endif %}
-                {% if loop.last %}
+                    {% endif %}
+                    {% if loop.last %}
                 </div>
                 {% endif %}
                 {% endfor %}
             </div>
 
-            <br/>
+            <br />
 
             <a href='../page/{{pagination.page-1}}' disabled='pagination.has_prev'>上一页</a>
-            {% for i in range(pagination.page-pagination.page%10+1,pagination.page-pagination.page%10+11) %}
+            {% for i in range(pagination.page-pagination.page%10+1,pagination.page-pagination.page%10+11 if (pagination.page-pagination.page%10+10<pagination.pages) else pagination.pages+1) %}
             {% if i==pagination.page %}
             <span>[{{i}}]</span>
             {% else %}
@@ -73,16 +81,39 @@
             {% endfor %}
             <a href='../page/{{pagination.page+1}}' disabled='pagination.has_next'>下一页</a>
             <select style="width:50px" onchange="location.href=this.options[this.selectedIndex].value;">
-            {% for i in range(1,pagination.pages) %}
-            {% if i==pagination.page %}
-            <option value="../page/{{i}}" selected>{{i}}</option>
-            {% else %}
-            <option value="../page/{{i}}">{{i}}</option>
-            {% endif %}
-            {% endfor %}
+                {% for i in range(1,pagination.pages) %}
+                {% if i==pagination.page %}
+                <option value="../page/{{i}}" selected>{{i}}</option>
+                {% else %}
+                <option value="../page/{{i}}">{{i}}</option>
+                {% endif %}
+                {% endfor %}
             </select>
         </div>
 
     </div>
 </div>
+<script>
+    function search(){
+        let inputText=document.getElementById('search-text').value;
+        window.location.href="/search/"+inputText+"/page/1"; 
+        // alert(inputText);
+    }
+    function onClick(){
+        search()
+    }
+    function onKeyDown(event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode == 27) { // 按 Esc 
+            //要做的事情
+        }
+        if (e && e.keyCode == 113) { // 按 F2 
+            //要做的事情
+        }
+        if (e && e.keyCode == 13) { // enter 键
+            search()
+        }
+
+    }
+</script>
 {% endblock %}
